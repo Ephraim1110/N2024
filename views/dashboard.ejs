@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            background-image: url('../207.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; 
+        }
+        .navbar-text {
+            margin-left: auto; 
+        }
+        .container {
+            display: flex;
+            justify-content: space-around; 
+        }
+        .container > div {
+            width: 100px; 
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.8); 
+            margin: 10px; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/dashboard">Neighbours +</a>
+        <a  class="navbar-text" href="/logout">Logout  (
+           <span > <%= userName %>  </span>  )
+        </a>
+    </nav>
+    <div class="container">
+        <div class="animate__animated animate__tada">
+            <a href="/Efficiency">Efficiency</a>
+        </div>
+        <div class="animate__animated animate__tada">
+            <a href="/Production">Production</a>
+        </div>
+        <div class="animate__animated animate__tada">
+            <a href="/Flexibility">Flexibility</a>
+        </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
