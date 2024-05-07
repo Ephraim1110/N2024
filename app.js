@@ -59,10 +59,17 @@ app.get('/logout', (req, res) => {
   app.post('/updateTemperature', async (req, res) => {
     const { temperature, set, on } = req.body;
     const userName = req.session.name || 'Utilisateur';
+    
+    console.log("Temperature:", temperature);
+    console.log("Set By:", userName);
 
     try {
         const WoT = await servient.start();
+
+       
         const td = await WoT.requestThingDescription("http://10.164.0.62:6010/thermostat");
+
+
         const thing = await WoT.consume(td);
         const temperatureValue = parseFloat(temperature);
         const temperatureData = {
@@ -72,13 +79,22 @@ app.get('/logout', (req, res) => {
 
         await thing.writeProperty("temperature", temperatureData);
 
-        res.status(200).json({ success: true, message: 'Temperature Data udapted successfully' });
+        console.log("Données de température envoyées avec succès.");
+        res.redirect('/success');
     } catch (error) {
-       
-        res.status(500).json({ success: false, message: 'Failed to update temperature data.' });
+        console.error("Erreur lors de l'envoi des données de température :", error);
+        res.redirect('/error');
     }
 });
 
+app.get('/success', (req, res) => {
+    res.render('success', { userName: req.session.name });
+});
+
+
+app.get('/error', (req, res) => {
+    res.render('error');
+});
 
 
 app.listen(3000, () => {
