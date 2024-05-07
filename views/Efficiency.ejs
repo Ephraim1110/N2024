@@ -44,37 +44,82 @@
         </a>
     </nav>
     <div class="container">
-        <div class="animate__animated animate__tada">
+        <div class="animate__animated animate__tada rounded">
             <a href="/Efficiency">Efficiency</a>
         </div>
-        <div class="animate__animated animate__tada">
+        <div class="animate__animated animate__tada rounded">
             <a href="/Production">Production</a>
         </div>
-        <div class="animate__animated animate__tada">
+        <div class="animate__animated animate__tada rounded">
             <a href="/Flexibility">Flexibility</a>
         </div>
     </div>
     <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-        <div style="background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 8px;">
+        <div style="background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 8px;margin-left: 20%">
             <form id="temperatureForm" action="/updateTemperature" method="POST" style="display: flex; flex-direction: column;">
                 <label for="temperature">Temperature</label>
                 <input type="number" id="temperature" name="temperature" placeholder="" style="margin-bottom: 10px;" required>
                 <label for="set">Set By</label>
-                <input type="text" id="set" name="set" placeholder="<%= userName %> " style="margin-bottom: 10px;">
-                <label for="on">On</label>
-                <input type="text" id="on" name="on" placeholder="On" style="margin-bottom: 20px;">
+                <input type="text" id="set" name="set" placeholder="<%= userName %> " style="margin-bottom: 10px;" disabled>
                 <button type="submit" style="padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; width: 100%;">Update</button>
+                <div id="alertContainer"></div>
+
             </form>
             
         </div>
-        <div >
-            <iframe src="http://grafana.ouranos-ws.com/d-solo/adkvh66kcef40d/thermostat?orgId=1&refresh=10s&from=1714478867636&to=1715083667636&theme=light&panelId=3" width="450" height="200" frameborder="0" refresh=10s></iframe>
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; margin-left: 20%;margin-right: 20%; ">
+            <div style="margin: auto;">
+                <iframe class="rounded" src="http://grafana.ouranos-ws.com/d-solo/adkvh66kcef40d/thermostat?orgId=1&refresh=10s&theme=light&panelId=2" width="450" height="200" frameborder="0"></iframe>
+                <iframe class="rounded" src="http://grafana.ouranos-ws.com/d-solo/adkvh66kcef40d/thermostat?orgId=1&refresh=10s&theme=light&panelId=3" width="450" height="200" frameborder="0"></iframe>
+                <iframe class="rounded" src="http://grafana.ouranos-ws.com/d-solo/adkvh66kcef40d/thermostat?orgId=1&refresh=10s&theme=light&panelId=1" width="450" height="200" frameborder="0"></iframe>
+                <iframe class="rounded" src="http://grafana.ouranos-ws.com/d-solo/adkvh66kcef40d/thermostat?orgId=1&refresh=10s&theme=light&panelId=4" width="450" height="200" frameborder="0"></iframe>
+            </div>
         </div>
     </div>
+   
     
     
     
     
+        <script>
+            function showAlert(message, alertType) {
+                const alertDiv = document.createElement('div');
+                alertDiv.classList.add('alert', `alert-${alertType}`, 'alert-dismissible', 'fade', 'show');
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    <strong>${alertType === 'success' ? 'Succès' : 'Erreur'}:</strong> ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                `;
+                document.getElementById('alertContainer').appendChild(alertDiv);
+            }
+        
+            document.getElementById('temperatureForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const temperature = document.getElementById('temperature').value;
+        
+                try {
+                    const response = await fetch('/updateTemperature', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ temperature }),
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    showAlert('Erreur lors de la communication avec le serveur.', 'danger');
+                }
+            });
+        </script>
+        
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>

@@ -19,6 +19,9 @@ app.use(session({
 }));
 
 app.use(express.static('public'))
+app.get('/', (req, res) => {
+    res.redirect('/login');
+  });
 
 app.get('/login', (req, res) => {
   res.render('login'); 
@@ -56,35 +59,26 @@ app.get('/logout', (req, res) => {
   app.post('/updateTemperature', async (req, res) => {
     const { temperature, set, on } = req.body;
     const userName = req.session.name || 'Utilisateur';
-    
-    console.log("Temperature:", temperature);
-    console.log("Set By:", userName);
-    console.log("On:", on);
 
     try {
         const WoT = await servient.start();
-
-       
         const td = await WoT.requestThingDescription("http://10.164.0.62:6010/thermostat");
-
-
         const thing = await WoT.consume(td);
-
+        const temperatureValue = parseFloat(temperature);
         const temperatureData = {
-            value: temperature,
-            observedBy: userName,
-            on: on
+            value: temperatureValue,
+            observedBy: userName
         };
 
         await thing.writeProperty("temperature", temperatureData);
 
-        console.log("Données de température envoyées avec succès.");
-        res.send('Données de température mises à jour avec succès.');
+        res.status(200).json({ success: true, message: 'Temperature Data udapted successfully' });
     } catch (error) {
-        console.error("Erreur lors de l'envoi des données de température :", error);
-        res.status(500).send('Erreur lors de la mise à jour des données de température.');
+       
+        res.status(500).json({ success: false, message: 'Failed to update temperature data.' });
     }
 });
+
 
 
 app.listen(3000, () => {
